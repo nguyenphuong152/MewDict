@@ -60,8 +60,8 @@ public class YourWordsFragment extends Fragment {
         adapter.setOnItemDeleteClick(new ListItemListener() {
             @Override
             public void onItemClick(int position) {
-                String value = String.valueOf(adapter.getItem(position));
-                Toast.makeText(getContext(),value + " del roi nha ",Toast.LENGTH_SHORT).show();
+                adapter.removeItem(position);
+                adapter.notifyDataSetChanged();
             }
         });
     }
