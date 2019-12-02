@@ -16,12 +16,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 
 public class DictionaryFragment extends Fragment {
 
     private FragmentListener listener;
     ArrayAdapter<String> adapter;
     ListView dicList;
+
+    private  ArrayList<String> mSource = new ArrayList<String> ();
 
     public DictionaryFragment() {
         // Required empty public constructor
@@ -43,31 +47,25 @@ public class DictionaryFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        Button btn = (Button)view.findViewById(R.id.btn_detail);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(listener!=null)
-//                listener.onItemClick(value);
-//            }
-//        });
+
 
         dicList = view.findViewById(R.id.dictionaryList);
-        adapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_list_item_1,getListOfWords());
+        adapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_list_item_1,mSource);
         dicList.setAdapter(adapter);
         dicList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(listener!=null)
-                listener.onItemClick(getListOfWords() [position]);
+                listener.onItemClick(mSource.get(position));
             }
         });
 
     }
 
-    public void resetDataSource(String[] source)
+    public void resetDataSource(ArrayList<String> source)
     {
-        adapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_list_item_1,source);
+        mSource = source;
+        adapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_list_item_1,mSource);
         dicList.setAdapter(adapter);
     }
 
@@ -84,13 +82,6 @@ public class DictionaryFragment extends Fragment {
         }
     }
 
-    String[] getListOfWords() {
-        String[] source = new String[]{
-          "a","b","c","d","e","f","g"
-          ,"h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"
-        };
-        return source;
-    }
 
     @Override
     public void onAttach(Context context) {

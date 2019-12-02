@@ -4,9 +4,13 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -34,18 +38,12 @@ public class YourWordsFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        Button btn = (Button)view.findViewById(R.id.btn_detail);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(listener!=null)
-//                    listener.onItemClick(value);
-//            }
-//        });
 
-        ListView yourwordsList =   view.findViewById(R.id.yourwordsList);
+        setHasOptionsMenu(true);
+
+        ListView yourwordsList =  (ListView) view.findViewById(R.id.yourwordsList);
         final YourWordsAdapter adapter = new YourWordsAdapter(getActivity(),getListOfWords());
         yourwordsList.setAdapter(adapter);
 
@@ -87,4 +85,17 @@ public class YourWordsFragment extends Fragment {
         };
         return source;
     }
+
+
+    //@Override
+//    public void onCreateOptionsMenu( Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.menu_clear,menu);
+//    }
+
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_clear,menu);
+    }
 }
+

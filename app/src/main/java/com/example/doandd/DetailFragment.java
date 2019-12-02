@@ -11,12 +11,18 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 public class DetailFragment extends Fragment {
 
-    private String value;
+    private String value = "";
+    private TextView tvWord;
+    private ImageButton btnBookmark,btnVolume;
+    private WebView tvWordTranslate;
 
     public DetailFragment() {
 
@@ -41,9 +47,30 @@ public class DetailFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Toast.makeText(getContext(),this.value,Toast.LENGTH_SHORT).show();
+        tvWord = (TextView) view.findViewById(R.id.tvWord);
+        tvWordTranslate = (WebView) view.findViewById(R.id.tvWordTranslate);
+        btnBookmark = (ImageButton) view.findViewById(R.id.btnBookmark);
+        btnVolume = (ImageButton) view.findViewById(R.id.btnVolume);
+
+        btnBookmark.setTag(0);
+
+        btnBookmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               int i = (int) btnBookmark.getTag();
+               if(i==0)
+               {
+                   btnBookmark.setImageResource(R.drawable.ic_star_black_fill);
+                   btnBookmark.setTag(1);
+               } else if (i==1) {
+                   btnBookmark.setImageResource(R.drawable.ic_star_border);
+                   btnBookmark.setTag(0);
+               }
+            }
+        });
+
     }
 
     @Override

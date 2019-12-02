@@ -24,13 +24,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
     MenuItem menuSetting;
+    Toolbar toolbar;
+
+    DBHelper dbHelper;
 
     DictionaryFragment dictFragment;
     YourWordsFragment yourwordsFragment;
@@ -38,8 +44,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        dbHelper = new DBHelper(this);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
@@ -88,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if(drawer.isDrawerOpen(GravityCompat.START))
@@ -106,17 +115,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String id = Global.getState(this,"dic_type");
         if(id!=null)
             onOptionsItemSelected(menu.findItem(Integer.valueOf(id)));
-        else
-            DB.getData(R.id.action_en_vi);
+        else {
+            ArrayList<String> source = dbHelper.getWord(R.id.action_en_vi);
+            dictFragment.resetDataSource(source);
+            //DB.getData(R.id.action_en_vi);
+        }
         return true;
+
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if(R.id.action_settings==id) return true;
+
         Global.saveState(this,"dic_type",String.valueOf(id));
-        String[] source =DB.getData(id);
+        ArrayList<String> source =dbHelper.getWord(id);
         if(id==R.id.action_en_vi)
         {
             dictFragment.resetDataSource(source);
@@ -134,7 +149,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.action_save){
-            goToFragment(yourwordsFragment,false);
+            String activeFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container).getClass().getSimpleName();
+            if(!activeFragment.equals(YourWordsFragment.class.getSimpleName()))
+            {
+                goToFragment(yourwordsFragment,false);
+            }
+
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -149,5 +169,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(!isTop)
             fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        String activeFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container).getClass().getSimpleName();
+        if(activeFragment.equals(YourWordsFragment.class.getSimpleName()))
+        {
+            menuSetting.setVisible(false);
+            toolbar.findViewById(R.id.edit_search).setVisibility(View.GONE);
+            toolbar.setTitle("Your Words");
+        }
+        else
+        {
+            menuSetting.setVisible(true);
+            toolbar.findViewById(R.id.edit_search).setVisibility(View.VISIBLE);
+            toolbar.setTitle("");
+        }
+        return true;
     }
 }
