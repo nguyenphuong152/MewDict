@@ -19,9 +19,9 @@ public class YourWordsAdapter extends BaseAdapter {
     Context mContext;
     ArrayList<String> mSource;
 
-    public YourWordsAdapter(Context context, String[] source){
+    public YourWordsAdapter(Context context, ArrayList<String> source){
       this.mContext = context;
-      this.mSource = new ArrayList<>(Arrays.asList(source));
+      this.mSource = source;
     }
 
     @Override
@@ -79,6 +79,11 @@ public class YourWordsAdapter extends BaseAdapter {
     public void  removeItem(int position)
     {
         mSource.remove(position);
+    }
+
+    public void clear() {
+        mSource.clear();
+
     }
 
     class ViewHolder {

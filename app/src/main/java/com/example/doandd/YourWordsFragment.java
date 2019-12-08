@@ -11,8 +11,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -20,11 +22,19 @@ import android.widget.Toast;
 public class YourWordsFragment extends Fragment {
 
     private FragmentListener listener;
+    private  DBHelper mDBHelper;
+    private YourWordsAdapter adapter;
 
     public YourWordsFragment() {
 
     }
 
+    public static YourWordsFragment getNewInstance(DBHelper dbHelper)
+    {
+        YourWordsFragment fragment = new YourWordsFragment();
+        fragment.mDBHelper = dbHelper;
+        return  fragment;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +54,7 @@ public class YourWordsFragment extends Fragment {
         setHasOptionsMenu(true);
 
         ListView yourwordsList =  (ListView) view.findViewById(R.id.yourwordsList);
-        final YourWordsAdapter adapter = new YourWordsAdapter(getActivity(),getListOfWords());
+        adapter = new YourWordsAdapter(getActivity(),mDBHelper.getAllWordsFromSavewords());
         yourwordsList.setAdapter(adapter);
 
         adapter.setOnItemClick(new ListItemListener() {
@@ -58,6 +68,8 @@ public class YourWordsFragment extends Fragment {
         adapter.setOnItemDeleteClick(new ListItemListener() {
             @Override
             public void onItemClick(int position) {
+                String key = (String) adapter.getItem(position);
+                mDBHelper.delSavingWords(key);
                 adapter.removeItem(position);
                 adapter.notifyDataSetChanged();
             }
@@ -78,13 +90,7 @@ public class YourWordsFragment extends Fragment {
         this.listener = listener;
     }
 
-    String[] getListOfWords() {
-        String[] source = new String[]{
-                "a","b","c","d","e","f","g"
-                ,"h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"
-        };
-        return source;
-    }
+
 
 
     //@Override
@@ -96,6 +102,18 @@ public class YourWordsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_clear,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if(id==R.id.action_clear)
+        {
+            mDBHelper.clearSavingWords();
+            adapter.clear();
+            adapter.notifyDataSetChanged();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

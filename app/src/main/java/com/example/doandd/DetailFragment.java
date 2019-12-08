@@ -23,14 +23,18 @@ public class DetailFragment extends Fragment {
     private TextView tvWord;
     private ImageButton btnBookmark,btnVolume;
     private WebView tvWordTranslate;
+    private DBHelper mDBHelper;
+    private int mDicType;
 
     public DetailFragment() {
 
     }
 
-    public static DetailFragment getNewInstance(String value) {
+    public static DetailFragment getNewInstance(String value,DBHelper dbHelper, int dicType) {
         DetailFragment fragment = new DetailFragment();
         fragment.value = value;
+        fragment.mDBHelper = dbHelper;
+        fragment.mDicType = dicType;
         return fragment;
     }
 
@@ -54,7 +58,18 @@ public class DetailFragment extends Fragment {
         btnBookmark = (ImageButton) view.findViewById(R.id.btnBookmark);
         btnVolume = (ImageButton) view.findViewById(R.id.btnVolume);
 
-        btnBookmark.setTag(0);
+        final Words words = mDBHelper.getWords(value,mDicType);
+        tvWord.setText(words.key);
+        tvWordTranslate.loadDataWithBaseURL(null,words.html,"text/html","utf-8",null);
+
+       Words bookmarkWord =  mDBHelper.getWordFromSaveWords(value);
+       int isMark = bookmarkWord == null? 0:1;
+
+        btnBookmark.setTag(isMark);
+
+        int icon = bookmarkWord ==null?R.drawable.ic_star_border:R.drawable.ic_star_black_fill;
+
+        btnBookmark.setImageResource(icon);
 
         btnBookmark.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,9 +79,11 @@ public class DetailFragment extends Fragment {
                {
                    btnBookmark.setImageResource(R.drawable.ic_star_black_fill);
                    btnBookmark.setTag(1);
+                   mDBHelper.addSavingWords(words);
                } else if (i==1) {
                    btnBookmark.setImageResource(R.drawable.ic_star_border);
                    btnBookmark.setTag(0);
+                   mDBHelper.delSavingWords(words);
                }
             }
         });

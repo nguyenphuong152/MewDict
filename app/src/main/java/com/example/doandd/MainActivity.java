@@ -58,21 +58,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         dictFragment = new DictionaryFragment();
-        yourwordsFragment = new YourWordsFragment();
+        yourwordsFragment = YourWordsFragment.getNewInstance(dbHelper);
 
         goToFragment(dictFragment,true);
 
         dictFragment.setOnFragmentListener(new FragmentListener() {
             @Override
             public void onItemClick(String value) {
-                goToFragment(DetailFragment.getNewInstance(value),false);
+                String id = Global.getState(MainActivity.this,"dic_type");
+                int dicType = id == null? R.id.action_en_vi: Integer.valueOf(id);
+                goToFragment(DetailFragment.getNewInstance(value,dbHelper,dicType),false);
             }
         });
 
         yourwordsFragment.setOnFragmentListener(new FragmentListener() {
             @Override
             public void onItemClick(String value) {
-                goToFragment(DetailFragment.getNewInstance(value),false);
+                String id = Global.getState(MainActivity.this,"dic_type");
+                int dicType = id == null? R.id.action_en_vi: Integer.valueOf(id);
+                goToFragment(DetailFragment.getNewInstance(value,dbHelper,dicType),false);
             }
         });
 
@@ -109,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         menuSetting = menu.findItem(R.id.action_settings);
@@ -130,17 +135,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         if(R.id.action_settings==id) return true;
 
-        Global.saveState(this,"dic_type",String.valueOf(id));
-        ArrayList<String> source =dbHelper.getWord(id);
         if(id==R.id.action_en_vi)
         {
+            Global.saveState(this,"dic_type",String.valueOf(id));
+            ArrayList<String> source =dbHelper.getWord(id);
             dictFragment.resetDataSource(source);
             menuSetting.setIcon(getDrawable(R.drawable.uk64));
+            return true;
         }
         else if(id==R.id.action_vi_en)
         {
+            Global.saveState(this,"dic_type",String.valueOf(id));
+            ArrayList<String> source =dbHelper.getWord(id);
             dictFragment.resetDataSource(source);
             menuSetting.setIcon(getDrawable(R.drawable.vn64));
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
