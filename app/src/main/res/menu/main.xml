@@ -6,9 +6,9 @@
         android:orderInCategory="100"
         android:title=""
         android:icon="@drawable/ic_more"
-        app:showAsAction="always"
-        >
-        <menu >
+        android:iconTint="#ffffff"
+        app:showAsAction="always">
+        <menu>
             <item
                 android:id="@+id/action_en_vi"
                 android:title="@string/en_vi"

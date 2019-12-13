@@ -24,6 +24,7 @@
     <string name="btn_go_to_detail">GO TO DETAIL</string>
 
     <string name="action_clear">CLEAR</string>
+    <string name="mewdict">MEWDICT</string>
 
 
 </resources>

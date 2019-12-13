@@ -65,15 +65,15 @@ public class YourWordsFragment extends Fragment {
             }
         });
 
-        adapter.setOnItemDeleteClick(new ListItemListener() {
-            @Override
-            public void onItemClick(int position) {
-                String key = (String) adapter.getItem(position);
-                mDBHelper.delSavingWords(key);
-                adapter.removeItem(position);
-                adapter.notifyDataSetChanged();
-            }
-        });
+////        adapter.setOnItemDeleteClick(new ListItemListener() {
+////            @Override
+////            public void onItemClick(int position) {
+////                String key = (String) adapter.getItem(position);
+////                mDBHelper.delSavingWords(key);
+////                adapter.removeItem(position);
+////                adapter.notifyDataSetChanged();
+//            }
+//        });
     }
 
     @Override

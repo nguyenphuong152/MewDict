@@ -134,19 +134,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(R.id.action_settings==id) return true;
-
+        Global.saveState(this,"dic_type",String.valueOf(id));
+        ArrayList<String> source =dbHelper.getWord(id);
         if(id==R.id.action_en_vi)
         {
-            Global.saveState(this,"dic_type",String.valueOf(id));
-            ArrayList<String> source =dbHelper.getWord(id);
+
             dictFragment.resetDataSource(source);
             menuSetting.setIcon(getDrawable(R.drawable.uk64));
             return true;
         }
         else if(id==R.id.action_vi_en)
         {
-            Global.saveState(this,"dic_type",String.valueOf(id));
-            ArrayList<String> source =dbHelper.getWord(id);
+//            Global.saveState(this,"dic_type",String.valueOf(id));
+//            ArrayList<String> source =dbHelper.getWord(id);
             dictFragment.resetDataSource(source);
             menuSetting.setIcon(getDrawable(R.drawable.vn64));
             return true;
